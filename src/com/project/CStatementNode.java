@@ -5,7 +5,7 @@ public class CStatementNode extends ProgrammingLanguage {
         super(statement);
     }
 
-    boolean isReturnStmt() {
-        return false;
+    public boolean isComment() {
+       return false;
     }
 }

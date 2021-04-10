@@ -7,7 +7,8 @@ public class Main {
         // where a node is a code statement (ProgrammingLanguage instance)
 
         ProgrammingLanguage stmt1 = new PythonStatementNode("return 10");
-        ProgrammingLanguage stmt2 = new PythonStatementNode("return 20");
+        ProgrammingLanguage stmt2 = new PythonStatementNode("");
+        
         if(stmt1.equals(stmt2)){
             System.out.println("No diff");
         } else {

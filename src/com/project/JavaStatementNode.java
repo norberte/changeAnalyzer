@@ -5,7 +5,13 @@ public class JavaStatementNode extends ProgrammingLanguage{
         super(line);
     }
 
-    boolean isReturnStmt() {
-        return false;
+    public boolean isComment() {
+        if(this.statement.startsWith("//")){
+            return true;
+        } else if (this.statement.startsWith("/* */")){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

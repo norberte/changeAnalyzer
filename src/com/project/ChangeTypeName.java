@@ -1,5 +1,5 @@
 package com.project;
 
 public enum ChangeTypeName {
-    LoopCondition, ControlStructureCondition, ClassInsertDelete
+    LoopCondition, ControlStructureCondition, ClassInsertDelete, ReturnTypeInsertDelete, NoChange
 }

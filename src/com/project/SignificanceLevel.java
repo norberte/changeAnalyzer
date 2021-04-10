@@ -1,5 +1,5 @@
 package com.project;
 
-enum SignificanceLevel {
+public enum SignificanceLevel {
     None, Low, Medium, Crucial
 }

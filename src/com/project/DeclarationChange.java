@@ -1,7 +1,7 @@
 package com.project;
 
 public class DeclarationChange extends Change {
-    public DeclarationChange(String name, SignificanceLevel significanceLevel){
+    public DeclarationChange(ChangeTypeName name, SignificanceLevel significanceLevel){
         super(name, significanceLevel);
     }
 }

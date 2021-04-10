@@ -5,7 +5,13 @@ public class PythonStatementNode extends ProgrammingLanguage {
         super(statement);
     }
 
-    boolean isReturnStmt() {
-        return false;
+    public boolean isComment() {
+        if(this.statement.startsWith("#") || this.statement.startsWith("\"\"\"")){
+            return true;
+        } else {
+            return false;
+        }
     }
+
+
 }
