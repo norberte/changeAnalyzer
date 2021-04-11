@@ -1,5 +1,7 @@
 package com.project;
 
+import java.util.Dictionary;
+
 public abstract class ProgrammingLanguage {
     protected String statement;
     protected ProgrammingLanguage parentStatement;
@@ -17,8 +19,15 @@ public abstract class ProgrammingLanguage {
     }
 
     public abstract boolean isComment();
+    public abstract boolean isClass();
+    public abstract boolean isInterface();
+    public abstract boolean isFunction();
+    public abstract boolean isDifferentClass(ProgrammingLanguage stmt);
+    public abstract boolean isDifferentReturnType(ProgrammingLanguage stmt);
+    public abstract boolean isDifferentInterface(ProgrammingLanguage stmt);
+    public abstract Dictionary<String, String> getParams();
 
     public boolean isReturnStmt(){
-        return statement.contains("return") && !this.isComment();
+        return statement.startsWith("return") && !this.isComment();
     }
 }

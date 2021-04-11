@@ -10,6 +10,6 @@ public abstract class Change {
     }
 
     public String toString(){
-        return "ChangeTypeName = " + this.name.toString() + "\t\t\t SignificanceLevel = " + this.significanceLevel.toString();
+        return "ChangeTypeName = " + this.name.toString() + "\t\t\t\t\t SignificanceLevel = " + this.significanceLevel.toString();
     }
 }
