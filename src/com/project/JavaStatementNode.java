@@ -6,9 +6,7 @@ public class JavaStatementNode extends ProgrammingLanguage{
     }
 
     public boolean isComment() {
-        if(this.statement.startsWith("//")){
-            return true;
-        } else if (this.statement.startsWith("/* */")){
+        if(this.statement.startsWith("//") || this.statement.startsWith("/*")){
             return true;
         } else {
             return false;
