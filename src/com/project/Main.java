@@ -3,7 +3,7 @@ package com.project;
 public class Main {
 
     public static void main(String[] args) {
-        /*
+
         System.out.println("Testing Return Type Insert/Delete");
 
         // compare node by node, where a node is a code statement (ProgrammingLanguage instance)
@@ -97,8 +97,6 @@ public class Main {
             Change change = new ChangeClassifier(stmt11, stmt12).classify();
             System.out.println(change);
         }
-
-        */
 
 
 
@@ -196,10 +194,6 @@ public class Main {
         // Statement Parent Change
         ProgrammingLanguage stmt = new PythonStatementNode("x = 10", new PythonStatementNode("z = 20", null));
         ProgrammingLanguage stmt = new PythonStatementNode("x = 10", new PythonStatementNode("y = 20", null));
-
-        // Statement update
-        ProgrammingLanguage stmt = new PythonStatementNode("", null);
-        ProgrammingLanguage stmt = new PythonStatementNode("", null);
         */
     }
 }

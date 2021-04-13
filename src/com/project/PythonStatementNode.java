@@ -71,11 +71,11 @@ public class PythonStatementNode extends ProgrammingLanguage {
 
     /*
      *    Function definition syntax:
-     *    def fctName(type1:param1, type2:param2) -> str:
+     *    def fctName(param1:type1, param2:type2) -> str:
+     *    Returns: {{"param1", "type1"}, {"param2", "type2"}}
      */
     public ArrayList<ArrayList<String>> getParams(){
         ArrayList<ArrayList<String>> params = new ArrayList<>();
-        String paramName, paramType;
 
         if(!this.isFunction()) {
             //not a function, return empty arraylist of arraylists
