@@ -94,8 +94,8 @@ public class PythonStatementNode extends ProgrammingLanguage {
         //one param
         if(!paramList_str.contains(",")){
             ArrayList<String> param = new ArrayList<>(){{
-                add(paramList_str.split(":")[0]);
-                add(paramList_str.split(":")[1]);
+                add(paramList_str.split(":")[0].strip());
+                add(paramList_str.split(":")[1].strip());
             }};
             params.add(param);
             return params;
@@ -104,8 +104,8 @@ public class PythonStatementNode extends ProgrammingLanguage {
         //two or more params
         for (String param : paramList_str.split(",")) {
             params.add( new ArrayList<>(){{
-                add(param.split(":")[0]);
-                add(param.split(":")[1]);
+                add(param.split(":")[0].strip());
+                add(param.split(":")[1].strip());
             }});
         }
         return params;

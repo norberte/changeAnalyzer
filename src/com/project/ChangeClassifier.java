@@ -70,8 +70,9 @@ public class ChangeClassifier {
             }
 
             for(int i=0; i < params1.size(); i++){
-                // if paramName1 != paramName2
-                if(!params1.get(i).get(0).equals(params2.get(i).get(0))){
+
+                // if paramName1 != paramName2 && param1 is still in the param2's list somewhere
+                if(!params1.get(i).get(0).equals(params2.get(i).get(0)) && params2.contains(params1.get(i)) ){
                     return true;
                 }
             }
@@ -103,8 +104,6 @@ public class ChangeClassifier {
             ArrayList<ArrayList<String>> params2 = stmt2.getParams();
 
             int min_param_num = Math.min(params1.size(), params2.size());
-            System.out.println("Param Renaming: " + params1);
-            System.out.println("Param Renaming: " + params2);
 
             for(int i=0; i < min_param_num; i++) {
                 // if the type of a param is the same, but the name is not the same, return true
@@ -183,7 +182,39 @@ public class ChangeClassifier {
         if(this.isControlStructureCondition()){
             return new BodyChange(ChangeTypeName.ControlStructureCondition, SignificanceLevel.Medium);
         }
-         */
+
+        if(this.isElsePartInsert()){
+            return new BodyChange(ChangeTypeName.ElsePartInsert, SignificanceLevel.Medium);
+        }
+
+        if(this.isElsePartDelete()){
+            return new BodyChange(ChangeTypeName.ElsePartDelete, SignificanceLevel.Medium);
+        }
+
+        if(this.isStatementInsertDelete()){
+            return new BodyChange(ChangeTypeName.StatementInsertDelete, SignificanceLevel.Low);
+        }
+
+        if(this.isStatementOrderingChange()){
+            return new BodyChange(ChangeTypeName.StatementOrderingChange, SignificanceLevel.Low);
+        }
+
+        if(this.isStatementParentChange()){
+            return new BodyChange(ChangeTypeName.StatementParentChange, SignificanceLevel.Medium);
+        }
+
+        if(this.isStatementUpdate()){
+            return new BodyChange(ChangeTypeName.StatementUpdate, SignificanceLevel.Low);
+        }
+
+        if(this.isCommentInsertDelete()){
+            return new BodyChange(ChangeTypeName.CommentInsertDelete, SignificanceLevel.None);
+        }
+
+        if(this.isCommentUpdate()){
+            return new BodyChange(ChangeTypeName.CommentUpdate, SignificanceLevel.None);
+        }
+        */
 
         if(this.isClassInsertDelete()){
             return new DeclarationChange(ChangeTypeName.ClassInsertDelete, SignificanceLevel.Crucial);
