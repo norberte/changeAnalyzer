@@ -10,6 +10,10 @@ public abstract class Change {
     }
 
     public String toString(){
-        return "ChangeTypeName = " + this.name.toString() + "\t\t\t\t\t SignificanceLevel = " + this.significanceLevel.toString();
+        return "ChangeTypeName = " + this.name.toString() + ";\t SignificanceLevel = " + this.significanceLevel.toString();
+    }
+    public boolean equals(Object other){
+        Change otherChange = (Change) other;
+        return this.significanceLevel.equals(otherChange.significanceLevel) && this.name.equals(otherChange.name);
     }
 }

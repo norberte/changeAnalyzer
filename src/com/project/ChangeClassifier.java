@@ -1,11 +1,6 @@
 package com.project;
 
-import jdk.jshell.spi.ExecutionControl;
-
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Dictionary;
-import java.util.List;
+import java.util.ArrayList;
 
 public class ChangeClassifier {
     private ProgrammingLanguage stmt1;
@@ -50,8 +45,8 @@ public class ChangeClassifier {
 
     private boolean isParameterInsertDelete(){
         if (stmt1.isFunction() && stmt2.isFunction()){
-            Dictionary<String, String> params1 = stmt1.getParams();
-            Dictionary<String, String> params2 = stmt2.getParams();
+            ArrayList<ArrayList<String>> params1 = stmt1.getParams();
+            ArrayList<ArrayList<String>> params2 = stmt2.getParams();
 
             int paramList_size1 = params1.size();
             int paramList_size2 = params2.size();
@@ -67,19 +62,16 @@ public class ChangeClassifier {
 
     private boolean isParameterOrderingChange(){
         if (stmt1.isFunction() && stmt2.isFunction()){
-            Dictionary<String, String> params1 = stmt1.getParams();
-            Dictionary<String, String> params2 = stmt2.getParams();
+            ArrayList<ArrayList<String>> params1 = stmt1.getParams();
+            ArrayList<ArrayList<String>> params2 = stmt2.getParams();
 
-            List<String> param_list1 = Collections.list(params1.keys());
-            List<String> param_list2 = Collections.list(params2.keys());
+            if(params1.size() != params2.size()){
+                return false;
+            }
 
-            System.out.println(params1);
-            System.out.println(params2);
-
-            int min_list_size = Math.min(param_list1.size(), param_list2.size());
-
-            for (int i = 0; i < min_list_size; i++) {
-                if (!param_list1.get(i).equals(param_list2.get(i))){   // if param1 != param2, then order has changed
+            for(int i=0; i < params1.size(); i++){
+                // if paramName1 != paramName2
+                if(!params1.get(i).get(0).equals(params2.get(i).get(0))){
                     return true;
                 }
             }
@@ -88,11 +80,41 @@ public class ChangeClassifier {
     }
 
     private boolean isParameterTypeChange(){
-        throw new UnsupportedOperationException("not implemented");
+        if (stmt1.isFunction() && stmt2.isFunction()){
+            ArrayList<ArrayList<String>> params1 = stmt1.getParams();
+            ArrayList<ArrayList<String>> params2 = stmt2.getParams();
+
+            int min_param_num = Math.min(params1.size(), params2.size());
+
+            for(int i=0; i < min_param_num; i++) {
+                // if the name of the params is the same, but the types are not the same, return true
+                if (params1.get(i).get(0).equals(params2.get(i).get(0)) &&
+                        !params1.get(i).get(1).equals(params2.get(i).get(1))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isParameterRenaming(){
-        throw new UnsupportedOperationException("not implemented");
+        if (stmt1.isFunction() && stmt2.isFunction()){
+            ArrayList<ArrayList<String>> params1 = stmt1.getParams();
+            ArrayList<ArrayList<String>> params2 = stmt2.getParams();
+
+            int min_param_num = Math.min(params1.size(), params2.size());
+            System.out.println("Param Renaming: " + params1);
+            System.out.println("Param Renaming: " + params2);
+
+            for(int i=0; i < min_param_num; i++) {
+                // if the type of a param is the same, but the name is not the same, return true
+                if (params1.get(i).get(1).equals(params2.get(i).get(1)) &&
+                        !params1.get(i).get(0).equals(params2.get(0).get(1))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isReturnTypeInsertDelete(){
@@ -187,6 +209,14 @@ public class ChangeClassifier {
             return new DeclarationChange(ChangeTypeName.ParameterOrderingChange, SignificanceLevel.Crucial);
         }
 
+        if(this.isParameterTypeChange()){
+            return new DeclarationChange(ChangeTypeName.ParameterTypeChange, SignificanceLevel.Crucial);
+        }
+
+        if(this.isParameterRenaming()){
+            return new DeclarationChange(ChangeTypeName.ParameterRenaming, SignificanceLevel.Medium);
+        }
+
         if(this.isReturnTypeUpdate()){
             return new DeclarationChange(ChangeTypeName.ReturnTypeUpdate, SignificanceLevel.Crucial);
         }
@@ -195,11 +225,10 @@ public class ChangeClassifier {
             return new DeclarationChange(ChangeTypeName.ReturnTypeInsertDelete, SignificanceLevel.Crucial);
         }
 
-        return new EmptyChange(ChangeTypeName.NoChange, SignificanceLevel.None);
+        return new NoChange(ChangeTypeName.NoChange, SignificanceLevel.None);
     }
 
     public Change classify(){
-        isParameterInsertDelete();
         return this.buildChangeObject();
     }
 }

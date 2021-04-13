@@ -1,6 +1,6 @@
 package com.project;
 
-import java.util.Dictionary;
+import java.util.ArrayList;
 
 public abstract class ProgrammingLanguage {
     protected String statement;
@@ -25,7 +25,7 @@ public abstract class ProgrammingLanguage {
     public abstract boolean isDifferentClass(ProgrammingLanguage stmt);
     public abstract boolean isDifferentReturnType(ProgrammingLanguage stmt);
     public abstract boolean isDifferentInterface(ProgrammingLanguage stmt);
-    public abstract Dictionary<String, String> getParams();
+    public abstract ArrayList<ArrayList<String>>  getParams();
 
     public boolean isReturnStmt(){
         return statement.startsWith("return") && !this.isComment();

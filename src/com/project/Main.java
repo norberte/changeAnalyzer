@@ -134,11 +134,11 @@ public class Main {
 
 
 
-        /*
+
         System.out.println("\nTesting Parameter Type Change");
 
-        ProgrammingLanguage stmt17 = new PythonStatementNode("def pick(l: list, index: int) -> int:", null);
-        ProgrammingLanguage stmt18 = new PythonStatementNode("def pick(l: dict, index: int) -> int:", null);
+        ProgrammingLanguage stmt17 = new PythonStatementNode("def concat(fname: str, lname: str) -> str:", null);
+        ProgrammingLanguage stmt18 = new PythonStatementNode("def concat(fname: str, lname: list) -> str:", null);
 
         if(stmt17.equals(stmt18)){
             System.out.println("No diff");
@@ -153,8 +153,8 @@ public class Main {
 
         System.out.println("\nTesting Parameter Renaming");
 
-        ProgrammingLanguage stmt19 = new PythonStatementNode("def my_function(fname):", null);
-        ProgrammingLanguage stmt20 = new PythonStatementNode("def my_function(lname):", null);
+        ProgrammingLanguage stmt19 = new PythonStatementNode("def my_function(fname: str)-> str:", null);
+        ProgrammingLanguage stmt20 = new PythonStatementNode("def my_function(lname: str)-> str:", null);
 
         if(stmt19.equals(stmt20)){
             System.out.println("No diff");
@@ -162,7 +162,6 @@ public class Main {
             Change change = new ChangeClassifier(stmt19, stmt20).classify();
             System.out.println(change);
         }
-        */
 
 
         /*

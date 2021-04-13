@@ -1,6 +1,6 @@
 package com.project;
 
-import java.util.Dictionary;
+import java.util.ArrayList;
 
 public class CStatementNode extends ProgrammingLanguage {
     public CStatementNode(String statement, ProgrammingLanguage parent) {
@@ -8,7 +8,7 @@ public class CStatementNode extends ProgrammingLanguage {
     }
 
     public boolean isComment() {
-       return false;
+        return false;
     }
     public boolean isClass() {
         return false;
@@ -30,7 +30,7 @@ public class CStatementNode extends ProgrammingLanguage {
         return false;
     }
 
-    public Dictionary<String, String> getParams() {
+    public ArrayList<ArrayList<String>>  getParams() {
         return null;
     }
 }

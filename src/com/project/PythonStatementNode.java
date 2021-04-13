@@ -1,7 +1,7 @@
 package com.project;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.ArrayList;
+
 
 public class PythonStatementNode extends ProgrammingLanguage {
     public PythonStatementNode(String statement, ProgrammingLanguage parent) {
@@ -16,7 +16,7 @@ public class PythonStatementNode extends ProgrammingLanguage {
     }
 
     public boolean isClass(){
-        if(this.statement.startsWith("class ")){
+        if(this.statement.startsWith("class ") && this.statement.endsWith(":") && ! this.isComment()){
             return true;
         }
         return false;
@@ -69,66 +69,45 @@ public class PythonStatementNode extends ProgrammingLanguage {
         return false;
     }
 
-    private int countChar(String str, char ch){
-        int count = 0;
-
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == ch) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
-    public Dictionary<String, String> getParams(){
-        Dictionary<String, String> params = new Hashtable<>();
+    /*
+     *    Function definition syntax:
+     *    def fctName(type1:param1, type2:param2) -> str:
+     */
+    public ArrayList<ArrayList<String>> getParams(){
+        ArrayList<ArrayList<String>> params = new ArrayList<>();
         String paramName, paramType;
 
-        if(this.isFunction()){
-
-            int startIndex = this.statement.indexOf("(");
-            int endIndex = this.statement.indexOf(")");
-
-            String paramList_str = this.statement.substring(startIndex+1, endIndex);
-
-            int paramSeparator = paramList_str.indexOf(",");
-
-            if(paramSeparator == -1){   // only one parameter
-                int paramEnd = paramList_str.indexOf(":");
-                paramName = paramList_str.substring(0, paramEnd);
-
-                paramType = paramList_str.substring(paramEnd+1);
-
-                params.put(paramName.strip(), paramType.strip());
-            } else {
-               int numberOfParams = countChar(paramList_str, ',') + 1;
-
-                for (int i = 0; i < numberOfParams; i++) {
-                    int separator = paramList_str.indexOf(",");
-
-                    if(separator == -1){
-                        int paramEnd = paramList_str.indexOf(":");
-
-                        paramName = paramList_str.substring(0, paramEnd);
-                        paramType = paramList_str.substring(paramEnd+1);
-                        params.put(paramName.strip(), paramType.strip());
-
-                        break;
-                    } else {
-                        String current_param_str = paramList_str.substring(0, separator);
-
-                        int paramEnd = current_param_str.indexOf(":");
-                        paramName = current_param_str.substring(0, paramEnd);
-                        paramType = current_param_str.substring(paramEnd + 1);
-                        params.put(paramName.strip(), paramType.strip());
-                        paramList_str = paramList_str.substring(separator + 1);
-                    }
-                }
-
-            }
+        if(!this.isFunction()) {
+            //not a function, return empty arraylist of arraylists
             return params;
         }
-        return null;
+
+        int startIndex = this.statement.indexOf("(");
+        int endIndex = this.statement.indexOf(")");
+
+        String paramList_str = this.statement.substring(startIndex+1, endIndex);
+        if(!paramList_str.contains(":")){
+            // zero params
+            return params;
+        }
+
+        //one param
+        if(!paramList_str.contains(",")){
+            ArrayList<String> param = new ArrayList<>(){{
+                add(paramList_str.split(":")[0]);
+                add(paramList_str.split(":")[1]);
+            }};
+            params.add(param);
+            return params;
+        }
+
+        //two or more params
+        for (String param : paramList_str.split(",")) {
+            params.add( new ArrayList<>(){{
+                add(param.split(":")[0]);
+                add(param.split(":")[1]);
+            }});
+        }
+        return params;
     }
 }
