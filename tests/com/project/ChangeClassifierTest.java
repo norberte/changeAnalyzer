@@ -3,11 +3,13 @@ package com.project;
 import junit.framework.TestCase;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotEquals;
+
 public class ChangeClassifierTest extends TestCase {
     private ChangeClassifier classifier;
 
     @Test
-    public void testClassifyIsClassInsertPythonReturnsTrue() {
+    public void testClassifyIsClassDeletePythonReturnsTrue() {
         ProgrammingLanguage stmt1 = new PythonStatementNode("class A:", null);
         ProgrammingLanguage parentSmt2 = new PythonStatementNode("x=10", null);
         ProgrammingLanguage stmt2 = new PythonStatementNode("y=10", parentSmt2);
@@ -17,7 +19,7 @@ public class ChangeClassifierTest extends TestCase {
         assertEquals(expected, actual);
     }
     @Test
-    public void testClassifyIsClassDeletePythonReturnsTrue() {
+    public void testClassifyIsClassInsertPythonReturnsTrue() {
         ProgrammingLanguage stmt1 = new PythonStatementNode("x=10", null);
         ProgrammingLanguage parentSmt2 = new PythonStatementNode("y=10", null);
         ProgrammingLanguage stmt2 = new PythonStatementNode("class A:", parentSmt2);
@@ -32,9 +34,10 @@ public class ChangeClassifierTest extends TestCase {
         ProgrammingLanguage parentSmt2 = new PythonStatementNode("x=10", null);
         ProgrammingLanguage stmt2 = new PythonStatementNode("y=10", parentSmt2);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ClassInsertDelete, SignificanceLevel.Crucial);
+        Change classDeleteChange = new DeclarationChange(ChangeTypeName.ClassInsertDelete, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        // It is not class delete since it is a comment containing the class keyword
+        assertNotEquals(classDeleteChange, actual);
     }
     @Test
     public void testClassifyIsClassInsertDeletePythonReturnsFalseMultilineCommentContainingClassKeyword(){
@@ -42,9 +45,9 @@ public class ChangeClassifierTest extends TestCase {
         ProgrammingLanguage parentSmt2 = new PythonStatementNode("x=10", null);
         ProgrammingLanguage stmt2 = new PythonStatementNode("y=10", parentSmt2);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ClassInsertDelete, SignificanceLevel.Crucial);
+        Change classDelete = new DeclarationChange(ChangeTypeName.ClassInsertDelete, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertNotEquals(classDelete, actual);
     }
 
     @Test
@@ -81,65 +84,49 @@ public class ChangeClassifierTest extends TestCase {
         ProgrammingLanguage stmt1 = new PythonStatementNode("class A:", null);
         ProgrammingLanguage stmt2 = new PythonStatementNode("interface B:", null);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.InterfaceInsertDelete, SignificanceLevel.Crucial);
+        Change interfaceInsert = new DeclarationChange(ChangeTypeName.InterfaceInsertDelete, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertNotEquals(interfaceInsert, actual);
     }
-    @Test
-    public void testClassifyIsDeleteInterfacePythonReturnsFalse() {
-        ProgrammingLanguage stmt1 = new PythonStatementNode("interface A:", null);
-        ProgrammingLanguage stmt2 = new PythonStatementNode("class A:", null);
-        classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.InterfaceInsertDelete, SignificanceLevel.Crucial);
-        Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
-    }
+
     @Test
     public void testClassifyIsInterfaceUpdatePythonReturnsTrue() {
         ProgrammingLanguage stmt1 = new PythonStatementNode("interface A:", null);
         ProgrammingLanguage stmt2 = new PythonStatementNode("interface B:", null);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.InterfaceUpdate, SignificanceLevel.Crucial);
+        Change expected = new DeclarationChange(ChangeTypeName.InterfaceUpdate, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
     public void testClassifyIsParamInsertFromZeroToTwoParamsPythonReturnsTrue() {
         ProgrammingLanguage stmt1 = new PythonStatementNode("def fct():", null);
-        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(int:a, int:b):", null);
+        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(a:int, b:int):", null);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ParameterInsertDelete, SignificanceLevel.Crucial);
+        Change expected = new DeclarationChange(ChangeTypeName.ParameterInsertDelete, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertEquals(expected, actual);
     }
     @Test
     public void testClassifyIsParamInsertFromOneToTwoParamsPythonReturnsTrue() {
-        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(int:a):", null);
-        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(int:a, int:b):", null);
+        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(a:int):", null);
+        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(a:int, b:int):", null);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ParameterInsertDelete, SignificanceLevel.Crucial);
+        Change paramInsert = new DeclarationChange(ChangeTypeName.ParameterInsertDelete, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
-    }
-    @Test
-    public void testClassifyIsParamInsertFromOneToTwoParamsNoTypePythonReturnsTrue() {
-        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(a):", null);
-        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(a, b):", null);
-        classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ParameterInsertDelete, SignificanceLevel.Crucial);
-        Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertEquals(paramInsert, actual);
     }
     @Test
     public void testClassifyIsParamDeleteFromTwoToOneParamsPythonReturnsTrue() {
-        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(a, b):", null);
-        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(a):", null);
+        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(a:list, b:int):", null);
+        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(a:list):", null);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ParameterInsertDelete, SignificanceLevel.Crucial);
+        Change paramDelete = new DeclarationChange(ChangeTypeName.ParameterInsertDelete, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertEquals(paramDelete, actual);
     }
+
 
     @Test
     public void testClassifyIsParamOrderingChangePythonTwoIntParamsReturnsTrue() {
@@ -179,21 +166,21 @@ public class ChangeClassifierTest extends TestCase {
     }
     @Test
     public void testClassifyIsParamOrderingChangePythonThreeParamsSameNameDifferentTypesReturnsFalse() {
-        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(int:a, int:b, int:c):", null);
-        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(int:a, str:c, int:b):", null);
+        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(a:int, b:int, c:int):", null);
+        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(a:int, c:str, b:int):", null);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ParameterOrderingChange, SignificanceLevel.Crucial);
+        Change paramOrdering = new DeclarationChange(ChangeTypeName.ParameterOrderingChange, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertNotEquals(paramOrdering, actual);
     }
     @Test
     public void testClassifyIsParamOrderingChangePythonThreeParamsReturnsFalse() {
-        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(int:a, int:b, int:c):", null);
-        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(int:a, int:d, int:b):", null);
+        ProgrammingLanguage stmt1 = new PythonStatementNode("def fct(a:int, b:int, c:int):", null);
+        ProgrammingLanguage stmt2 = new PythonStatementNode("def fct(a:int, d:int, b:int):", null);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ParameterOrderingChange, SignificanceLevel.Crucial);
+        Change paramOrdering = new DeclarationChange(ChangeTypeName.ParameterOrderingChange, SignificanceLevel.Crucial);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertNotEquals(paramOrdering, actual);
     }
 
     @Test
@@ -228,9 +215,9 @@ public class ChangeClassifierTest extends TestCase {
         ProgrammingLanguage stmt1 = new PythonStatementNode("def fct():", null);
         ProgrammingLanguage stmt2 = new PythonStatementNode("def fct():", null);
         classifier = new ChangeClassifier(stmt1, stmt2);
-        Change notExpected = new DeclarationChange(ChangeTypeName.ParameterTypeChange, SignificanceLevel.Crucial);
+        Change noChange = new NoChange(ChangeTypeName.NoChange, SignificanceLevel.None);
         Change actual = classifier.classify();
-        assertNotSame(notExpected, actual);
+        assertEquals(noChange, actual);
     }
 
     @Test
